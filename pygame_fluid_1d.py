@@ -7,10 +7,10 @@ pygame.init()
 
 WINDOW_SIZE = (800, 480)
 screen = pygame.display.set_mode(WINDOW_SIZE, 0, 32) 
+pygame.display.set_caption("1D_Fluid_Simulation") #1차원 유체를 간단하게 표현하는 코드
 clock = pygame.time.Clock()
-font = pygame.font.SysFont("Arial", 18)
 
-class surface_water_particle():
+class surface_water_particle(): #이 코드에서는 훅의 법칙을 사용할 예정
     k = 0.04 
     d = 0.08 
     def __init__(self, x, y):
@@ -26,7 +26,7 @@ class surface_water_particle():
         self.y_pos += self.velocity
         self.velocity += a
 
-class water():
+class water(): #물은 각 particle들의 모임으로 만들 것
     def __init__(self, x_start, x_end, y_start, y_end, segment_length):
         self.springs = []
         self.x_start = x_start
@@ -38,7 +38,7 @@ class water():
             self.springs.append(surface_water_particle(i * segment_length + x_start, y_end))
 
     def update(self, spread):
-        passes = 4
+        passes = 4 #최대 4번까지만 옆으로 움직이게 구현하여 최적화
         for i in range(len(self.springs)):
             self.springs[i].update()
 
@@ -59,7 +59,7 @@ class water():
                 if i < len(self.springs) - 1:
                     self.springs[i + 1].y_pos += rightDeltas[i]
 
-    def splash(self, x_position, speed):
+    def splash(self, x_position, speed): #파동이 움직이도록 만들어줌
         index = int((x_position - self.x_start) / self.segment_length)
         if 0 <= index < len(self.springs):
             self.springs[index].velocity = speed

@@ -5,9 +5,10 @@ from pygame.locals import *
 pygame.init()
 
 WIDTH, HEIGHT = 800, 600
-GRID_SIZE = 20 
+GRID_SIZE = 20 #오일러 방법은 격자를 중심으로 유체를 표현한다
 NX, NY = WIDTH // GRID_SIZE, HEIGHT // GRID_SIZE
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Eulerian_Simulation")
 clock = pygame.time.Clock()
 
 velocity_field = np.zeros((NY, NX, 2))
@@ -27,7 +28,7 @@ def pressure_to_color(pressure):
     normalized = (pressure - pressure.min()) / (pressure.max() - pressure.min()) 
     return (normalized * 255).astype(int)
 
-def add_pressure_at(x, y):
+def add_pressure_at(x, y): #일정 위치에 압력을 주는 함수. 아래에서 마우스의 위치를 이용하여 이를 마우스 위치에 적용시킬 것
     grid_x, grid_y = x // GRID_SIZE, y // GRID_SIZE
     if 0 <= grid_x < NX and 0 <= grid_y < NY:
         radius = 5

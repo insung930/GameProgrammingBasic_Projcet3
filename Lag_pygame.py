@@ -9,6 +9,7 @@ WIDTH, HEIGHT = 800, 600
 GRID_SIZE = 20
 NX, NY = WIDTH // GRID_SIZE, HEIGHT // GRID_SIZE
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Lagrangian_Method_Simulation")
 clock = pygame.time.Clock()
 
 velocity_field = np.zeros((NY, NX, 2))
@@ -16,7 +17,7 @@ for i in range(NX):
     for j in range(NY):
         velocity_field[j, i] = [np.sin(j * 0.2), np.cos(i * 0.2)]
 
-def calculate_pressure():
+def calculate_pressure(): #압력은 속력에 반비례한다
     pressure = np.zeros((NY, NX))
     for i in range(NX):
         for j in range(NY):
@@ -24,7 +25,7 @@ def calculate_pressure():
             pressure[j, i] = 1.0 / (1.0 + np.sqrt(vx**2 + vy**2))
     return pressure
 
-class Particle:
+class Particle: #라그랑주 방법은 각 입자가 직접 이동하며 유체를 표현함. 여기서 파티클들을 정의해 줄 것
     def __init__(self, x, y):
         self.x = x
         self.y = y

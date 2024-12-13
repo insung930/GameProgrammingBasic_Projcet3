@@ -11,7 +11,7 @@ class LBMFluidSimulation:
             [0, 0], [1, 0], [0, 1], [-1, 0], [0, -1],
             [1, 1], [-1, 1], [-1, -1], [1, -1]
         ])
-        self.weights = np.array([4/9] + [1/9]*4 + [1/36]*4)
+        self.weights = np.array([4/9] + [1/9]*4 + [1/36]*4)#유체가 흐를 수 있는 확률을 설정
 
         self.f = np.ones((9, height, width)) * (1/9)
         self.f_eq = np.zeros_like(self.f)
@@ -19,7 +19,7 @@ class LBMFluidSimulation:
         self.rho = np.ones((height, width))
         self.u = np.zeros((2, height, width))
 
-    def equilibrium(self):
+    def equilibrium(self): #평형 조건 설정
         u_sq = self.u[0]**2 + self.u[1]**2
         for i in range(9):
             cu = (self.velocities[i, 0] * self.u[0] +
@@ -28,16 +28,16 @@ class LBMFluidSimulation:
                 1 + 3*cu + 4.5*cu**2 - 1.5*u_sq
             )
 
-    def collision(self):
+    def collision(self): #collision 과정에 대한 설정
         self.equilibrium()
         self.f += -(1 / self.tau) * (self.f - self.f_eq)
 
-    def streaming(self):
+    def streaming(self): #streaming 과정에 대한 설정
         for i, (cx, cy) in enumerate(self.velocities):
             self.f[i] = np.roll(self.f[i], shift=cx, axis=1)  
             self.f[i] = np.roll(self.f[i], shift=cy, axis=0)  
 
-    def macroscopic(self):
+    def macroscopic(self): #확률 상에 존재하는 유체의 흐름을 다시 구체적으로 바꿔줌
         self.rho = np.sum(self.f, axis=0) 
         self.u[0] = np.sum(self.f * self.velocities[:, 0, None, None], axis=0) / self.rho
         self.u[1] = np.sum(self.f * self.velocities[:, 1, None, None], axis=0) / self.rho
